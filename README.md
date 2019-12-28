@@ -1,4 +1,4 @@
-# wireless2 [![Build Status](https://travis-ci.org/joshvillbrandt/wireless.svg?branch=master)](https://travis-ci.org/joshvillbrandt/wireless) [![Documentation Status](https://readthedocs.org/projects/wireless/badge/?version=latest)](http://wireless.readthedocs.org/en/latest/)
+# wireless [![Build Status](https://travis-ci.org/joshvillbrandt/wireless.svg?branch=master)](https://travis-ci.org/joshvillbrandt/wireless) [![Documentation Status](https://readthedocs.org/projects/wireless/badge/?version=latest)](http://wireless.readthedocs.org/en/latest/)
 
 A dead simple, cross-platform Python library to connect to wireless networks.
 
