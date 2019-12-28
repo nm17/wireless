@@ -24,12 +24,10 @@ setup(
     setup_requires=[
         'tox',
         'nose',
-        'flake8',
-        'packaging'
+        'flake8'
     ],
     install_requires=[
-    ],
+        'packaging'],
     scripts=[],
-    test_suite='tests',
-    zip_safe=False
+    test_suite='tests'
 )
