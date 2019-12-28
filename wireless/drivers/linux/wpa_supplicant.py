@@ -5,7 +5,7 @@ from wireless.wireless import WirelessDriver, cmd
 
 
 class WPASupplicantWireless(WirelessDriver):
-    _file = '/tmp/wpa_supplicant.conf'
+    _file = "/tmp/wpa_supplicant.conf"
     _interface = None
 
     # init
@@ -16,20 +16,18 @@ class WPASupplicantWireless(WirelessDriver):
     def connect(self, ssid, password):
         # attempt to stop any active wpa_supplicant instances
         # ideally we do this just for the interface we care about
-        cmd('sudo killall wpa_supplicant')
+        cmd("sudo killall wpa_supplicant")
 
         # don't do DHCP for GoPros; can cause dropouts with the server
-        cmd('sudo ifconfig {} 10.5.5.10/24 up'.format(self._interface))
+        cmd("sudo ifconfig {} 10.5.5.10/24 up".format(self._interface))
 
         # create configuration file
-        f = open(self._file, 'w')
-        f.write('network={{\n    ssid="{}"\n    psk="{}"\n}}\n'.format(
-            ssid, password))
+        f = open(self._file, "w")
+        f.write('network={{\n    ssid="{}"\n    psk="{}"\n}}\n'.format(ssid, password))
         f.close()
 
         # attempt to connect
-        cmd('sudo wpa_supplicant -i{} -c{} -B'.format(
-            self._interface, self._file))
+        cmd("sudo wpa_supplicant -i{} -c{} -B".format(self._interface, self._file))
 
         # check that the connection was successful
         # i've never seen it take more than 3 seconds for the link to establish
@@ -47,16 +45,15 @@ class WPASupplicantWireless(WirelessDriver):
     # returned the ssid of the current network
     def current(self):
         # get interface status
-        response = cmd('iwconfig {}'.format(
-            self.interface()))
+        response = cmd("iwconfig {}".format(self.interface()))
 
         # the current network is on the first line.
         # ex: wlan0     IEEE 802.11AC  ESSID:"SSID"  Nickname:"<WIFI@REALTEK>"
         line = response.splitlines()[0]
-        match = re.search('ESSID:\"(.+?)\"', line)
+        match = re.search('ESSID:"(.+?)"', line)
         if match is not None:
             network = match.group(1)
-            if network != 'off/any':
+            if network != "off/any":
                 return network
 
         # return none if there was not an active connection
@@ -65,14 +62,14 @@ class WPASupplicantWireless(WirelessDriver):
     # return a list of wireless adapters
     def interfaces(self):
         # grab list of interfaces
-        response = cmd('iwconfig')
+        response = cmd("iwconfig")
 
         # parse response
         interfaces = []
         for line in response.splitlines():
-            if len(line) > 0 and not line.startswith(' '):
+            if len(line) > 0 and not line.startswith(" "):
                 # this line contains an interface name!
-                if 'no wireless extensions' not in line:
+                if "no wireless extensions" not in line:
                     # this is a wireless interface
                     interfaces.append(line.split()[0])
 

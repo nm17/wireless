@@ -10,10 +10,13 @@ from wireless.drivers.osx.network_setup import NetworksetupWireless
 
 
 def cmd(cmd):
-    return subprocess.Popen(
-        cmd, shell=True,
-        stdout=subprocess.PIPE, stderr=subprocess.STDOUT
-    ).stdout.read().decode()
+    return (
+        subprocess.Popen(
+            cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+        )
+        .stdout.read()
+        .decode()
+    )
 
 
 # abstracts away wireless connection
@@ -25,13 +28,13 @@ class Wireless:
     def __init__(self, interface=None):
         # detect and init appropriate driver
         self._driver_name = self._detectDriver()
-        if self._driver_name == 'nmcli':
+        if self._driver_name == "nmcli":
             self._driver = NmcliWireless(interface=interface)
-        elif self._driver_name == 'nmcli0990':
+        elif self._driver_name == "nmcli0990":
             self._driver = Nmcli0990Wireless(interface=interface)
-        elif self._driver_name == 'wpa_supplicant':
+        elif self._driver_name == "wpa_supplicant":
             self._driver = WPASupplicantWireless(interface=interface)
-        elif self._driver_name == 'networksetup':
+        elif self._driver_name == "networksetup":
             self._driver = NetworksetupWireless(interface=interface)
 
         # attempt to auto detect the interface if none was provided
@@ -42,31 +45,31 @@ class Wireless:
 
         # raise an error if there is still no interface defined
         if self.interface() is None:
-            raise Exception('Unable to auto-detect the network interface.')
+            raise Exception("Unable to auto-detect the network interface.")
 
     def _detectDriver(self):
         # try nmcli (Ubuntu 14.04)
-        response = cmd('which nmcli')
-        if len(response) > 0 and 'not found' not in response:
-            response = cmd('nmcli --version')
+        response = cmd("which nmcli")
+        if len(response) > 0 and "not found" not in response:
+            response = cmd("nmcli --version")
             parts = response.split()
             ver = parts[-1]
-            if version.parse(ver) > version.parse('0.9.9.0'):
-                return 'nmcli0990'
+            if version.parse(ver) > version.parse("0.9.9.0"):
+                return "nmcli0990"
             else:
-                return 'nmcli'
+                return "nmcli"
 
         # try nmcli (Ubuntu w/o network-manager)
-        response = cmd('which wpa_supplicant')
-        if len(response) > 0 and 'not found' not in response:
-            return 'wpa_supplicant'
+        response = cmd("which wpa_supplicant")
+        if len(response) > 0 and "not found" not in response:
+            return "wpa_supplicant"
 
         # try networksetup (Mac OS 10.10)
-        response = cmd('which networksetup')
-        if len(response) > 0 and 'not found' not in response:
-            return 'networksetup'
+        response = cmd("which networksetup")
+        if len(response) > 0 and "not found" not in response:
+            return "networksetup"
 
-        raise Exception('Unable to find compatible wireless driver.')
+        raise Exception("Unable to find compatible wireless driver.")
 
     # connect to a network
     def connect(self, ssid, password):
